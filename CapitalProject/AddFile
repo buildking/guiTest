@@ -17,6 +17,7 @@ import glob
 root = Tk()
 
 ########################################파일 읽어오기###################################################
+#before read
 beforeFileList = listdir('excel_before')
 
 print(beforeFileList)
@@ -31,6 +32,20 @@ for tmp in beforeFileList:
 
 print(readExcel)
 
+#after read
+beforeFileList2 = listdir('excel_after')
+
+print(beforeFileList2)
+
+readExcel2 = []
+
+for tmp2 in beforeFileList2:
+
+    tmpExcel2 = pd.read_excel(f'./excel_after/{tmp2}')
+
+    readExcel2.append(tmpExcel2)
+
+print(readExcel2)
 ####################################################################################################################
 
 #삭제예정
@@ -41,6 +56,7 @@ def combineError():
 def excelCombine():
     global readExcel
 
+    #before merge
     if len(readExcel) == 0 or len(readExcel) == 1:
         combineError()
         return
@@ -49,6 +65,14 @@ def excelCombine():
         combineExcel = pd.merge(readExcel[tmp], readExcel[tmp+1], how='outer')
     combineExcel.to_excel('./excel_result/excel_before.xlsx', index=False)
 
+    #after merge
+    if len(readExcel2) == 0 or len(readExcel2) == 1:
+        combineError()
+        return
+    minusexcel2 = len(readExcel2) - 1
+    for tmp in range(minusexcel2):
+        combineExcel2 = pd.merge(readExcel2[tmp], readExcel2[tmp+1], how='outer')
+    combineExcel2.to_excel('./excel_result/excel_after.xlsx', index=False)
 
 
 
