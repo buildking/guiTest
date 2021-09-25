@@ -39,7 +39,7 @@ def combineError():
 
 #엑셀 합치기
 def excelCombine():
-    global combineExcel, readExcel, all_data
+    global readExcel
 
     if len(readExcel) == 0 or len(readExcel) == 1:
         combineError()
@@ -47,7 +47,7 @@ def excelCombine():
     minusexcel = len(readExcel) - 1
     for tmp in range(minusexcel):
         combineExcel = pd.merge(readExcel[tmp], readExcel[tmp+1], how='outer')
-    combineExcel.to_excel(f'./excel_after/{beforeFileList}.xlsx')#, header=False, index=False)
+    combineExcel.to_excel('./excel_result/excel_before.xlsx', index=False)
 
 
 
@@ -66,7 +66,7 @@ root.geometry("400x300")
 root.resizable(False, False)
 
 
-excelMergeBtn = Button(root, text="엑셀 합치기", command=excelCombine())
+excelMergeBtn = Button(root, text="엑셀 합치기", command= lambda : excelCombine())
 excelMergeBtn.pack(padx=2, pady=2, fill='x')
 
 queryMakeBtn = Button(root, text="쿼리만들기", command=None)
