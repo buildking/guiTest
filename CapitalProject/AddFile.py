@@ -138,7 +138,7 @@ def excelCompare():
 ###########################
 #초기 데이터프레임 row data -> 따로 column 만들어서 보관해둬야 한다.
 #반드시 번호,데이터 짝지어서 보관해야함!!!!!! ex / (번호,피보험자), (번호,모집인) etc..
-#
+#https://rfriend.tistory.com/279?category=675917  <<<<<<<-----------참고!!!!!!!!
 
 
         for tmpB in beforeCore :
