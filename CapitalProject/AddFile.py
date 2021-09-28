@@ -17,6 +17,7 @@ import glob
 root = Tk()
 
 ########################################파일 읽어오기###################################################
+
 #before read
 beforeFileList = listdir('excel_before')
 
@@ -48,7 +49,7 @@ for tmp2 in beforeFileList2:
 print(readExcel2)
 ####################################################################################################################
 
-#삭제예정
+#에러메시지 출력(프로세스는 조금 더 고민해야될듯)
 def combineError():
     pass
 
@@ -106,6 +107,7 @@ def excelCompare():
 
     try :
 
+        #데이터프레임 다이어트 -> 그상태로 엑셀 출력까지?????
         beforeDataFrame = beforeDataFrame[['피보험자', '피보험자 주민등록번호', '모집인명', '모집인 주민번호', '계약체결일']]
         afterDataFrame = afterDataFrame[['피보험자', '피보험자 주민등록번호', '모집인명', '모집인 주민번호', '계약체결일']]
 
@@ -122,14 +124,22 @@ def excelCompare():
         afterDataFrameDate = afterDataFrame[['계약체결일']]
 
         resultBlood = pd.merge(beforeDataFrameBlood, afterDataFrameBlood, how='inner')
+        #주민번호 앞번호 6자리만 따로 빼내기!!
         resultBloodNum = pd.merge(beforeDataFrameBloodNum, afterDataFrameBloodNum, how='inner')
         resultMom = pd.merge(beforeDataFrameMom, afterDataFrameMom, how='inner')
+        # 주민번호 앞번호 6자리만 따로 빼내기!!
         resultMomNum = pd.merge(beforeDataFrameMomNum, afterDataFrameMomNum, how='inner')
-        resultDate = pd.merge(beforeDataFrameDate, afterDataFrameDate, how='inner')
+        #이건 필요없어짐(6개월 차이나기 때문에 비교만 하면 된다!)# resultDate = pd.merge(beforeDataFrameDate, afterDataFrameDate, how='inner')
 
         for tmp in resultBlood :
             beforeCore.append(beforeDataFrame[beforeDataFrame['피보험자'] == f'{tmp}'])
             afterCore.append(beforeDataFrame[afterDataFrame['피보험자'] == f'{tmp}'])
+
+###########################
+#초기 데이터프레임 row data -> 따로 column 만들어서 보관해둬야 한다.
+#반드시 번호,데이터 짝지어서 보관해야함!!!!!! ex / (번호,피보험자), (번호,모집인) etc..
+#
+
 
         for tmpB in beforeCore :
             for tmpA in afterCore :
