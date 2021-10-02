@@ -106,48 +106,75 @@ def excelCompare():
     afterDataFrame = pd.read_excel('./excel_result/excel_after.xlsx')
 
     try :
-
-        #데이터프레임 다이어트 -> 그상태로 엑셀 출력까지?????
-        beforeDataFrame = beforeDataFrame[['피보험자', '피보험자 주민등록번호', '모집인명', '모집인 주민번호', '계약체결일']]
-        afterDataFrame = afterDataFrame[['피보험자', '피보험자 주민등록번호', '모집인명', '모집인 주민번호', '계약체결일']]
-
-        beforeDataFrameBlood = beforeDataFrame[['피보험자']]
-        beforeDataFrameBloodNum = beforeDataFrame[['피보험자 주민등록번호']]
-        beforeDataFrameMom = beforeDataFrame[['모집인명']]
-        beforeDataFrameMomNum = beforeDataFrame[['모집인명 주민번호']]
-        beforeDataFrameDate = beforeDataFrame[['계약체결일']]
-
-        afterDataFrameBlood = afterDataFrame[['피보험자']]
-        afterDataFrameBloodNum = afterDataFrame[['피보험자 주민등록번호']]
-        afterDataFrameMom = afterDataFrame[['모집인명']]
-        afterDataFrameMomNum = afterDataFrame[['모집인명 주민번호']]
-        afterDataFrameDate = afterDataFrame[['계약체결일']]
-
-        resultBlood = pd.merge(beforeDataFrameBlood, afterDataFrameBlood, how='inner')
-        #주민번호 앞번호 6자리만 따로 빼내기!!
-        resultBloodNum = pd.merge(beforeDataFrameBloodNum, afterDataFrameBloodNum, how='inner')
-        resultMom = pd.merge(beforeDataFrameMom, afterDataFrameMom, how='inner')
-        # 주민번호 앞번호 6자리만 따로 빼내기!!
-        resultMomNum = pd.merge(beforeDataFrameMomNum, afterDataFrameMomNum, how='inner')
-        #이건 필요없어짐(6개월 차이나기 때문에 비교만 하면 된다!)# resultDate = pd.merge(beforeDataFrameDate, afterDataFrameDate, how='inner')
-
-        for tmp in resultBlood :
-            beforeCore.append(beforeDataFrame[beforeDataFrame['피보험자'] == f'{tmp}'])
-            afterCore.append(beforeDataFrame[afterDataFrame['피보험자'] == f'{tmp}'])
+        #############################pandasVersion#####################################
+        #
+        # #데이터프레임 다이어트 -> 그상태로 엑셀 출력까지?????
+        # beforeDataFrame = beforeDataFrame[['피보험자', '피보험자 주민등록번호', '모집인명', '모집인 주민번호', '계약체결일']]
+        # beforeDataFrame['beforeRow'] = beforeDataFrame['index']
+        # afterDataFrame = afterDataFrame[['피보험자', '피보험자 주민등록번호', '모집인명', '모집인 주민번호', '계약체결일']]
+        # afterDataFrame['afterRow'] = afterDataFrame['index']
+        #
+        # beforeDataFrameBlood = beforeDataFrame[['피보험자', 'beforeRow']]
+        # beforeDataFrameBloodNum = beforeDataFrame[['피보험자 주민등록번호', 'beforeRow']]
+        # beforeDataFrameMom = beforeDataFrame[['모집인명', 'beforeRow']]
+        # beforeDataFrameMomNum = beforeDataFrame[['모집인명 주민번호', 'beforeRow']]
+        # beforeDataFrameDate = beforeDataFrame[['계약체결일', 'beforeRow']]
+        #
+        # afterDataFrameBlood = afterDataFrame[['피보험자', 'afterRow']]
+        # afterDataFrameBloodNum = afterDataFrame[['피보험자 주민등록번호', 'afterRow']]
+        # afterDataFrameMom = afterDataFrame[['모집인명', 'afterRow']]
+        # afterDataFrameMomNum = afterDataFrame[['모집인명 주민번호', 'afterRow']]
+        # afterDataFrameDate = afterDataFrame[['계약체결일', 'afterRow']]
+        #
+        # resultBlood = pd.merge(beforeDataFrameBlood, afterDataFrameBlood, how='inner')
+        # #주민번호 앞번호 6자리만 따로 빼내기!!
+        # resultBloodNum = pd.merge(beforeDataFrameBloodNum, afterDataFrameBloodNum, how='inner')
+        # resultMom = pd.merge(beforeDataFrameMom, afterDataFrameMom, how='inner')
+        # # 주민번호 앞번호 6자리만 따로 빼내기!!
+        # resultMomNum = pd.merge(beforeDataFrameMomNum, afterDataFrameMomNum, how='inner')
+        # #이건 필요없어짐(6개월 차이나기 때문에 비교만 하면 된다!)# resultDate = pd.merge(beforeDataFrameDate, afterDataFrameDate, how='inner')
+        #
+        # for tmp in resultBlood :
+        #     beforeCore.append(beforeDataFrame[beforeDataFrame['피보험자'] == f'{tmp}'])
+        #     afterCore.append(afterDataFrame[afterDataFrame['피보험자'] == f'{tmp}'])
 
 ###########################
 #초기 데이터프레임 row data -> 따로 column 만들어서 보관해둬야 한다.
 #반드시 번호,데이터 짝지어서 보관해야함!!!!!! ex / (번호,피보험자), (번호,모집인) etc..
 #https://rfriend.tistory.com/279?category=675917  <<<<<<<-----------참고!!!!!!!!
+        # for tmpB in beforeCore :
+        #     for tmpA in afterCore :
+        #         if tmpA['계약체결일'] == tmpB['계약체결일'] and tmpA['모집인명'] == tmpB['모집인명'] and str(tmpA['피보험자 주민등록번호'])[:5] == str(tmpB['피보험자 주민등록번호'])[:5] and str(tmpA['모집인 주민번호'])[:5] == str(tmpB['모집인 주민번호'])[:5]:
+        #             finalResultBefore.append(tmpB)
+        #             finalResultAfter.append(tmpA)
+        # print('%'*180, finalResultBefore,'%'*180, finalResultAfter, '%'*180)
+########################################################################################
+
+        #before data row
+        beforeRowNum = 0
+        #after data row
+        afterRowNum = 0
+        #비교 통과한 before data와 after data의 row 저장(append로)
+        coreRowNum = []
+        coreRowNum.clear()
+        #비포엑셀 데이터 한줄씩 출력
+        for bdf in beforeDataFrame:
+            #몇번째 비포데이터인지 입력할 예정
+            beforeRowNum += 1
+            #애프터엑셀 데이터 한줄씩 출력
+            for adf in afterDataFrame:
+                #몇번째 애프터데이터인지 입력할 예정
+                afterRowNum += 1
+                #비교 조건 입력
+                if bdf['피보험자'] == adf['피보험자'] and \
+                        bdf['모집인명'] == adf['모집인명'] and \
+                        str(bdf['피보험자 주민등록번호'])[:5] == str(adf['피보험자 주민등록번호'])[:5] and \
+                        str(bdf['모집인명 주민번호'])[:5] == str(adf['모집인명 주민번호'])[:5]:
+                    coreRowNum.append([beforeRowNum, afterRowNum])
 
 
-        for tmpB in beforeCore :
-            for tmpA in afterCore :
-                if tmpA['계약체결일'] == tmpB['계약체결일'] and tmpA['모집인명'] == tmpB['모집인명'] and str(tmpA['피보험자 주민등록번호'])[:5] == str(tmpB['피보험자 주민등록번호'])[:5] and str(tmpA['모집인 주민번호'])[:5] == str(tmpB['모집인 주민번호'])[:5]:
-                    finalResultBefore.append(tmpB)
-                    finalResultAfter.append(tmpA)
 
-        print('%'*180, finalResultBefore,'%'*180, finalResultAfter, '%'*180)
+
 
 
 
