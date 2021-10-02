@@ -137,10 +137,8 @@ def oracleInsert():
     _userPwd = _oracleSetting["user_password"]
 
     #오라클 접속
-    #dsn = cx_Oracle.makedsn(_ip, int(_port), _service)
-    #conn = cx_Oracle.connect(_userName, _userPwd, dsn)
-    dsn = cx_Oracle.makedsn("211.238.147.202", 1521, "netis")
-    conn = cx_Oracle.connect("SK2019", "ntflow", dsn)
+    dsn = cx_Oracle.makedsn(_ip, int(_port), _service)
+    conn = cx_Oracle.connect(_userName, _userPwd, dsn)
     logger.debug("database connect!")
 
     cursor = conn.cursor()
