@@ -4,6 +4,7 @@ import tkinter.messagebox as msbox
 import pandas as pd
 import combine
 import compare
+import queryMake
 
 root = Tk()
 
@@ -15,7 +16,7 @@ root.resizable(False, False)
 excelMergeBtn = Button(root, text="엑셀 합치기", command= lambda : combine.excelCombine())
 excelMergeBtn.pack(padx=2, pady=2, fill='x')
 
-queryMakeBtn = Button(root, text="쿼리만들기", command=None)
+queryMakeBtn = Button(root, text="쿼리만들기", command=queryMake.queryMake)
 queryMakeBtn.pack(padx=2, pady=2, fill='x')
 
 excelCompareBtn = Button(root, text="엑셀비교하기", command= lambda : compare.excelCompare())

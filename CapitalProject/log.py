@@ -19,7 +19,7 @@ def setLogging(_logName="log"):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    file_handler = logging.FileHandler('./log/project.log')
+    file_handler = logging.FileHandler('./log/project.log', mode='a')
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
