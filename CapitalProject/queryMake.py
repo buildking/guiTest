@@ -163,6 +163,6 @@ def oracleInsert():
     conn.close()
     logger.info("oracle db insert is done")
 
-#queryMake()
+queryMake()
 
-oracleInsert()
+#oracleInsert()
