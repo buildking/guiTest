@@ -214,8 +214,9 @@ def excelCompare():
         print(afterDataFrame.loc[j,'계약체결일']-beforeDataFrame.loc[i,'계약체결일'])
         print(str(afterDataFrame.loc[j,'계약체결일']-beforeDataFrame.loc[i,'계약체결일']))
         print(str(afterDataFrame.loc[j,'계약체결일']-beforeDataFrame.loc[i,'계약체결일']).split()[0])
-        #181일로 할지 180일로 할지 물어봐야됨.
-        if int(str(afterDataFrame.loc[j,'계약체결일']-beforeDataFrame.loc[i,'계약체결일']).split()[0]) < 181 :
+        #181일로 할지 180일로 할지 물어봐야됨. -> 181 확정
+
+        if int(str(pd.to_datetime(str(afterDataFrame.loc[j,'계약체결일']))-pd.to_datetime(str(beforeDataFrame.loc[i,'계약체결일']))).split()[0]) < 181 :
             lastnum.append([i,j])
 
     print(lastnum)
