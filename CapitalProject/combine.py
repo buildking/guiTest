@@ -24,6 +24,7 @@ def excelCombine():
     for beforeExcel in beforeFileList:
         try:
 
+            beforeExcelThing = pd.DataFrame()
             beforeExcelThing = pd.read_excel(f'./excel_before/{beforeExcel}')
 
             beforeExcelList.append(beforeExcelThing)
@@ -39,6 +40,7 @@ def excelCombine():
 
     for afterExcel in afterFileList:
         try:
+            afterExcelThing = pd.DataFrame()
             afterExcelThing = pd.read_excel(f'./excel_after/{afterExcel}')
 
             afterExcelList.append(afterExcelThing)
@@ -48,14 +50,16 @@ def excelCombine():
             msbox.showwarning("파일 인식 불가", "excel_after폴더를 확인해주세요.")
 
     ##########################################################################
-
+    print('*'*20,beforeExcelList,'*'*20)
+    print('*' * 20, afterExcelList, '*' * 20)
     #before merge
     if len(beforeExcelList) == 0 or len(beforeExcelList) == 1:
         combineError('before')
         return
     combineBeforeExcel = pd.DataFrame()
-    for beforeExcelOne in range(beforeExcelList):
-        combineBeforeExcel = pd.merge(combineBeforeExcel, beforeExcelOne, how='outer')
+    combineBeforeExcel = beforeExcelList[0]
+    for beforeExcelOne in beforeExcelList[1:]:
+        combineBeforeExcel = pd.concat([beforeExcelOne, combineBeforeExcel], join='outer')
     combineBeforeExcel.to_excel('./excel_result/excel_before.xlsx', index=False)
 
     #after merge
@@ -63,7 +67,7 @@ def excelCombine():
         combineError('after')
         return
     combineAfterExcel = pd.DataFrame()
-    for afterExcelOne in range(afterExcelList):
-        combineAfterExcel = pd.merge(combineAfterExcel, afterExcelOne, how='outer')
+    combineAfterExcel = afterExcelList[0]
+    for afterExcelOne in afterExcelList[1:]:
+        combineAfterExcel = pd.concat([afterExcelOne, combineAfterExcel], join='outer')
     combineAfterExcel.to_excel('./excel_result/excel_after.xlsx', index=False)
-
