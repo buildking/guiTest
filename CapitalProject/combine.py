@@ -7,8 +7,8 @@ import pandas as pd
 def excelCombine():
 
     #합칠 파일이 부족할 때 경고문
-    def combineError():
-        msbox.showwarning("파일 개수 부족", "합칠 엑셀파일이 부족합니다.")
+    def combineError(state):
+        msbox.showwarning("파일 개수 부족", f"{state}폴더에 합칠 엑셀파일이 부족합니다.")
 
 
 
@@ -19,40 +19,51 @@ def excelCombine():
 
     print(beforeFileList)
 
-    readExcel = []
+    beforeExcelList = []
 
-    for tmp in beforeFileList:
-        tmpExcel = pd.read_excel(f'./excel_before/{tmp}')
+    for beforeExcel in beforeFileList:
+        try:
 
-        readExcel.append(tmpExcel)
+            beforeExcelThing = pd.read_excel(f'./excel_before/{beforeExcel}')
+
+            beforeExcelList.append(beforeExcelThing)
+
+        except:
+
+            msbox.showwarning("파일 인식 불가", "excel_before폴더를 확인해주세요.")
 
     # after read
-    beforeFileList2 = listdir('excel_after')
+    afterFileList = listdir('excel_after')
 
-    readExcel2 = []
+    afterExcelList = []
 
-    for tmp2 in beforeFileList2:
-        tmpExcel2 = pd.read_excel(f'./excel_after/{tmp2}')
+    for afterExcel in afterFileList:
+        try:
+            afterExcelThing = pd.read_excel(f'./excel_after/{afterExcel}')
 
-        readExcel2.append(tmpExcel2)
+            afterExcelList.append(afterExcelThing)
 
-##########################################################################
+        except:
+
+            msbox.showwarning("파일 인식 불가", "excel_after폴더를 확인해주세요.")
+
+    ##########################################################################
 
     #before merge
-    if len(readExcel) == 0 or len(readExcel) == 1:
-        combineError()
+    if len(beforeExcelList) == 0 or len(beforeExcelList) == 1:
+        combineError('before')
         return
-    minusexcel = len(readExcel) - 1
-    for tmp in range(minusexcel):
-        combineExcel = pd.merge(readExcel[tmp], readExcel[tmp+1], how='outer')
-    combineExcel.to_excel('./excel_result/excel_before.xlsx', index=False)
+    combineBeforeExcel = pd.DataFrame()
+    for beforeExcelOne in range(beforeExcelList):
+        combineBeforeExcel = pd.merge(combineBeforeExcel, beforeExcelOne, how='outer')
+    combineBeforeExcel.to_excel('./excel_result/excel_before.xlsx', index=False)
 
     #after merge
-    if len(readExcel2) == 0 or len(readExcel2) == 1:
-        combineError()
+    if len(afterExcelList) == 0 or len(afterExcelList) == 1:
+        combineError('after')
         return
-    minusexcel2 = len(readExcel2) - 1
-    for tmp in range(minusexcel2):
-        combineExcel2 = pd.merge(readExcel2[tmp], readExcel2[tmp+1], how='outer')
-    combineExcel2.to_excel('./excel_result/excel_after.xlsx', index=False)
+    combineAfterExcel = pd.DataFrame()
+    for afterExcelOne in range(afterExcelList):
+        combineAfterExcel = pd.merge(combineAfterExcel, afterExcelOne, how='outer')
+    combineAfterExcel.to_excel('./excel_result/excel_after.xlsx', index=False)
 
