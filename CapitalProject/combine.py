@@ -11,39 +11,51 @@ def excelCombine():
         msbox.showwarning("파일 개수 부족", f"{state}폴더에 합칠 엑셀파일이 부족합니다.")
 
 
-    # before read
+    ## before read ##
+    #폴더 안의 파일 리스트 생성
     beforeFileList = listdir('excel_before')
 
     print(beforeFileList)
 
+    #폴더 안의 파일 저장할 리스트 생성
     beforeExcelList = []
+    beforeExcelList.clear()
 
+    #리스트 안의 파일 하나씩 꺼내기
     for beforeExcel in beforeFileList:
         try:
 
             beforeExcelThing = pd.DataFrame()
             beforeExcelThing = pd.read_excel(f'./excel_before/{beforeExcel}')
 
+            #파일 읽는데 성공했다면, 리스트에 엑셀 저장
             beforeExcelList.append(beforeExcelThing)
 
         except:
 
+            #엑셀파일 인식이 안된다면, 에러메세지 띄우기
             msbox.showwarning("파일 인식 불가", "excel_before폴더를 확인해주세요.")
 
-    # after read
+    ## after read ##
+    #폴더 안의 파일 리스트 생성
     afterFileList = listdir('excel_after')
 
+    #폴더 안의 파일 저장할 리스트 생성
     afterExcelList = []
+    afterExcelList.clear()
 
+    #파일리스트 안의 파일 하나씩 꺼내기
     for afterExcel in afterFileList:
         try:
             afterExcelThing = pd.DataFrame()
             afterExcelThing = pd.read_excel(f'./excel_after/{afterExcel}')
 
+            #파일 읽는데 성공했다면, 리스트에 엑셀 저장
             afterExcelList.append(afterExcelThing)
 
         except:
 
+            #엑셀파일 인식이 안된다면, 에러메세지 띄우기
             msbox.showwarning("파일 인식 불가", "excel_after폴더를 확인해주세요.")
 
 
