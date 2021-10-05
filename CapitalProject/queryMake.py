@@ -53,13 +53,13 @@ def beforeExcelToQuery():
         logger.debug("no." + str(index) + " row read!")
         # N번쨰 row 가져오기
         # 각 컬럼이 16개나 되기때문에 index로 접근하기위해 .loc사용
-        col0 = beforeDf.loc[index][0]#연번
-        col4 = beforeDf.loc[index][4].strip()#피보험자
-        col5 = beforeDf.loc[index][5].strip()#피보험 주민번호
-        col10 = beforeDf.loc[index][10]#계약체결일
-        col11 = beforeDf.loc[index][11].strip()#계약소멸일
-        col13 = beforeDf.loc[index][13].strip()#모집인명
-        col14 = beforeDf.loc[index][14].strip()#모집인주민번호
+        col0 = str(beforeDf.loc[index][0])#연번
+        col4 = str(beforeDf.loc[index][4]).strip()#피보험자
+        col5 = str(beforeDf.loc[index][5]).strip()#피보험 주민번호
+        col10 = str(beforeDf.loc[index][10]).strip().split(" ")[0]#계약체결일
+        col11 = str(beforeDf.loc[index][11]).strip().split(" ")[0]#계약소멸일
+        col13 = str(beforeDf.loc[index][13]).strip()#모집인명
+        col14 = str(beforeDf.loc[index][14]).strip()#모집인주민번호
 
         # insert 쿼리 생성
         a = f'''INSERT INTO {beforeTableName}( "number_old", EXP_DATE, INS_NM, INS_BIRTH, PLNR_NM, PLNR_BIRTH)VALUES('{col0}', '{col11}','{col4}','{col5}','{col13}','{col14}');
@@ -88,13 +88,13 @@ def afterExcelToQuery():
         logger.debug("no." + str(index) + " row read!")
         # N번쨰 row 가져오기
         # 각 컬럼이 16개나 되기때문에 index로 접근하기위해 .loc사용
-        col0 = afterDf.loc[index][0]  # 연번
-        col4 = afterDf.loc[index][4].strip()  # 피보험자
-        col5 = afterDf.loc[index][5].strip()  # 피보험 주민번호
-        col10 = afterDf.loc[index][10]  # 계약체결일
-        col11 = afterDf.loc[index][11].strip()  # 계약소멸일
-        col13 = afterDf.loc[index][13].strip()  # 모집인명
-        col14 = afterDf.loc[index][14].strip()  # 모집인주민번호
+        col0 = str(afterDf.loc[index][0])  # 연번
+        col4 = str(afterDf.loc[index][4]).strip()  # 피보험자
+        col5 = str(afterDf.loc[index][5]).strip()  # 피보험 주민번호
+        col10 = str(afterDf.loc[index][10]).strip().split(" ")[0]  # 계약체결일
+        col11 = str(afterDf.loc[index][11]).strip().split(" ")[0]  # 계약소멸일
+        col13 = str(afterDf.loc[index][13]).strip()  # 모집인명
+        col14 = str(afterDf.loc[index][14]).strip()  # 모집인주민번호
 
         #insert 쿼리 생성
         a = f'''INSERT INTO {afterTableName}("number_new", CON_DATE, INS_NM, INS_BIRTH, PLNR_NM, PLNR_BIRTH)VALUES('{col0}','{col10}','{col4}','{col5}','{col13}','{col14}');
