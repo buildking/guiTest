@@ -1,10 +1,11 @@
 import pandas as pd
-import config
 import cx_Oracle
 import log
 import os
 from zipfile import ZipFile
 from config import ConfigUtil
+import datetime
+from tkinter import *
 
 #로그파일 세팅
 logger = log.setLogging("queryMake")
@@ -18,8 +19,10 @@ def unzipOracleClient():
         zip.extractall()
         logger.info('oracleclient.zip file is unzipped in "instantclient_19_12/" folder')
 
-def queryMake():
+def queryMake(_text=None):
     logger.info("query make start")
+    time = str(datetime.datetime.now())[0:-7]
+    _text.insert(END, "[{}] {}".format(time, '쿼리만들기 시작합니다.\n'))
     beforeExcelToQuery()
     logger.info("")
     logger.info("--->excel_before convert complete<---")
@@ -29,8 +32,13 @@ def queryMake():
     logger.info("--->excel_after convert complete<---")
     logger.info("")
 
+    time = str(datetime.datetime.now())[0:-7]
+    _text.insert(END, "[{}] {}".format(time, '쿼리만들기 완료되었습니다.\n'))
+
     _dbInsertFlag = ConfigUtil.config.get('oracle', 'database_insert', fallback='N')
     if _dbInsertFlag == 'Y':
+        time = str(datetime.datetime.now())[0:-7]
+        _text.insert(END, "[{}] {}".format(time, '오라클DB에 insert를 시작합니다.\n'))
         #DBinsert하도록 되어있으면
         oracleInsert()
     logger.info("query make end")
@@ -63,7 +71,7 @@ def beforeExcelToQuery():
         '''
 
         # insert 쿼리 파일에 write
-        file.write(a)
+        file.write(a.strip() + "\n")
         logger.debug("before:: no." + str(index+1) + " row file write")
 
     logger.info("before_excel to sql success")
@@ -97,7 +105,7 @@ def afterExcelToQuery():
         '''
 
         #insert쿼리 파일에 write
-        file.write(a)
+        file.write(a.strip() + "\n")
         logger.debug("after:: no." + str(index+1) + " row file write")
 
     logger.info("after_excel to sql success")
@@ -122,7 +130,7 @@ def oracleInsert():
     oracleClientDir_abs = os.path.abspath(oracleClientDir)
 
     # 환경변수 설정(oracle 접속을위해 필요
-    LOCATION = oracleClientDir
+    LOCATION = oracleClientDir_abs
     os.environ["PATH"] = LOCATION + ";" + os.environ["PATH"]
 
     #설정파일 변수에 저장
@@ -159,6 +167,6 @@ def oracleInsert():
     conn.close()
     logger.info("oracle db insert is done")
 
-queryMake()
+#queryMake()
 
 #oracleInsert()

@@ -1,17 +1,18 @@
 import pandas as pd
 
 #before, after excel file compare
-def excelCompare():
+def excelCompare(_text=None):
 
     # dataframe declare
-    beforeDataFrame = pd.DataFrame()
-    afterDataFrame = pd.DataFrame()
+    #TODO 안쓰면 지우시오(Lee)
+    #beforeDataFrame = pd.DataFrame()
+    #afterDataFrame = pd.DataFrame()
 
-    beforeCore = pd.DataFrame()
-    afterCore = pd.DataFrame()
+    #beforeCore = pd.DataFrame()
+    #afterCore = pd.DataFrame()
 
-    finalResultBefore = pd.DataFrame()
-    finalResultAfter = pd.DataFrame()
+    #finalResultBefore = pd.DataFrame()
+    #finalResultAfter = pd.DataFrame()
 
     beforeDataFrame = pd.read_excel('./excel_result/excel_before.xlsx')
     afterDataFrame = pd.read_excel('./excel_result/excel_after.xlsx')
@@ -36,7 +37,7 @@ def excelCompare():
     #조건을 통과한 값의 (b'계약소멸일' - a'계약체결일')이 180이내인지 추려냄
     for i, j in coreRowNum:
         #날짜 차이가 180일 이내인지 비교
-        if abs(int(str(pd.to_datetime(str(afterDataFrame.loc[j,'계약체결일']))-pd.to_datetime(str(beforeDataFrame.loc[i,'계약소멸일']))).split()[0])) < 181 :
+        if abs(int(str(pd.to_datetime(str(afterDataFrame.loc[j,'계약체결일']))-pd.to_datetime(str(beforeDataFrame.loc[i,'계약소멸일']))).split()[0])) <= 180 :
             #aSubB = abs(a[계약체결일] - b[계약소멸일])
             aSubB = int(str(pd.to_datetime(str(afterDataFrame.loc[j, '계약체결일'])) - pd.to_datetime(
                 str(beforeDataFrame.loc[i, '계약소멸일']))).split()[0])

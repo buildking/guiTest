@@ -4,7 +4,7 @@ import pandas as pd
 
 
 #엑셀 합치기
-def excelCombine():
+def excelCombine(_text=None):
 
     #합칠 파일이 부족할 때 경고문
     def combineError(state):
