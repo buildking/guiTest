@@ -4,14 +4,11 @@ import cx_Oracle
 import log
 import os
 from zipfile import ZipFile
+from config import ConfigUtil
 
 #로그파일 세팅
 logger = log.setLogging("queryMake")
 logger.debug("config file read")
-
-#config에서 oracle 섹션을 읽는다.
-_config = config.ConfigUtil()
-_oracleSetting = _config.getOracleSetting()
 
 def unzipOracleClient():
     #압축이 풀릴 디렉토리명
@@ -32,7 +29,8 @@ def queryMake():
     logger.info("--->excel_after convert complete<---")
     logger.info("")
 
-    if _oracleSetting['database_insert'] == 'Y':
+    _dbInsertFlag = ConfigUtil.config.get('oracle', 'database_insert', fallback='N')
+    if _dbInsertFlag == 'Y':
         #DBinsert하도록 되어있으면
         oracleInsert()
     logger.info("query make end")
@@ -45,12 +43,11 @@ def beforeExcelToQuery():
     logger.info("before_dataFrame is ready")
 
     #config에서 테이블명 불러오기
-    beforeTableName = _oracleSetting['expired_table']
+    beforeTableName = ConfigUtil.config.get('oracle', 'expired_table', fallback='END_CONTRACT')
 
     #쓰기모드로 open
     file = open("./sql/before.sql", 'w', encoding='utf8')
     for index, row in beforeDf.iterrows():#beforeDf의 row를 순회
-        logger.debug("no." + str(index) + " row read!")
         # N번쨰 row 가져오기
         # 각 컬럼이 16개나 되기때문에 index로 접근하기위해 .loc사용
         col0 = str(beforeDf.loc[index][0])#연번
@@ -67,7 +64,7 @@ def beforeExcelToQuery():
 
         # insert 쿼리 파일에 write
         file.write(a)
-        logger.info("before:: no." + str(index+1) + " row file write")
+        logger.debug("before:: no." + str(index+1) + " row file write")
 
     logger.info("before_excel to sql success")
     file.close()
@@ -80,12 +77,11 @@ def afterExcelToQuery():
     logger.info("after_dataFrame is ready")
 
     # config 에서 테이블명 불러오기
-    afterTableName = _oracleSetting['concluded_table']
+    afterTableName = ConfigUtil.config.get('oracle', 'concluded_table', fallback='NEW_CONTRACT')
 
     # 쓰기모드로 open
     file = open("./sql/after.sql", 'w', encoding='utf8')
     for index, row in afterDf.iterrows():#afterDf의 row를 순회
-        logger.debug("no." + str(index) + " row read!")
         # N번쨰 row 가져오기
         # 각 컬럼이 16개나 되기때문에 index로 접근하기위해 .loc사용
         col0 = str(afterDf.loc[index][0])  # 연번
@@ -102,7 +98,7 @@ def afterExcelToQuery():
 
         #insert쿼리 파일에 write
         file.write(a)
-        logger.info("after:: no." + str(index+1) + " row file write")
+        logger.debug("after:: no." + str(index+1) + " row file write")
 
     logger.info("after_excel to sql success")
     file.close()
@@ -130,14 +126,14 @@ def oracleInsert():
     os.environ["PATH"] = LOCATION + ";" + os.environ["PATH"]
 
     #설정파일 변수에 저장
-    _ip = _oracleSetting["ip"]
-    _port = _oracleSetting["port"]
-    _service = _oracleSetting["service"]
-    _userName = _oracleSetting["user_name"]
-    _userPwd = _oracleSetting["user_password"]
+    _ip = ConfigUtil.config.get('oracle', 'ip', fallback="10.1.1.1")
+    _port = int(ConfigUtil.config.get('oracle', 'port', fallback="1521"))
+    _service = ConfigUtil.config.get('oracle', 'service', fallback='service')
+    _userName = ConfigUtil.config.get('oracle', 'user_name', fallback='admin')
+    _userPwd = ConfigUtil.config.get('oracle', 'user_password', fallback='admin')
 
     #오라클 접속
-    dsn = cx_Oracle.makedsn(_ip, int(_port), _service)
+    dsn = cx_Oracle.makedsn(_ip, _port, _service)
     conn = cx_Oracle.connect(_userName, _userPwd, dsn)
     logger.debug("database connect!")
 
