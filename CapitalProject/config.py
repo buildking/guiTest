@@ -1,39 +1,41 @@
 import configparser
+import os
+import string
 
 
 class ConfigUtil:
-    def __init__(self):
-        try:
-            self.config = configparser.ConfigParser()
-            self.readConfig()
-        except:
-            self.config = None
+    config = configparser.RawConfigParser()
 
-    def readConfig(self):
-        self.config.read('./config.ini', encoding='utf-8')
-        self.config.optionxform = str
+    @staticmethod
+    def load(configFile):
+        ConfigUtil.config.optionxform = str
+        ConfigUtil.config.read(configFile, encoding='utf-8')
 
-    def getConfig(self):
-        return self.config
+        for section in ConfigUtil.config.sections():
+            for k, v in ConfigUtil.config.items(section):
+                ConfigUtil.config[section][k] = string.Template(v).substitute(os.environ)
 
-    def getExcelSetting(self):
-        if self.config is None or len(self.config.sections()) == 0:
-            raise Exception("config 파일을 읽지 못했습니다.")
-        else :
-            excelSection = self.config['excel']
-            return dict(excelSection)
+    @staticmethod
+    def write(configFile):
+        with open(configFile, 'w', encoding='utf-8') as configfile:
+            ConfigUtil.config.write(configfile)
 
-    def getOracleSetting(self):
-        if self.config is None or len(self.config.sections()) == 0:
-            raise Exception("config 파일을 읽지 못했습니다.")
-        else :
-            oracleSection = self.config['oracle']
-            return dict(oracleSection)
+    @staticmethod
+    def getItems(section):
+        items = dict(ConfigUtil.config.items(section))
 
-#단위 테스트
-testConfig = ConfigUtil()
-try:
-    print(testConfig.getOracleSetting())
-except Exception as e:
-    print(e)
+        return dict((k.lower(), v) for k, v in items.items())
 
+
+ConfigUtil.load("config.ini")
+
+if __name__ == '__main__':
+    print("config is main")
+    ConfigUtil.load("config.ini")
+
+    """
+    print( ConfigUtil.config.get( "My" , "foodir1" , fallback="QQQ") )
+    print( ConfigUtil.config.items( "My") )
+    """
+
+    ConfigUtil.write('a.cfg')
