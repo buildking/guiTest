@@ -13,8 +13,8 @@ if __name__ == '__main__':
     root = Tk()
 
     root.title("업무 자동화 시스템")
-    root.geometry("400x300")
-    root.resizable(False, False)
+    root.geometry("500x300")#로그표시땜에 늘림
+    root.resizable(True, False)#로그표시가 잘안되서 넒이는 늘릴수있게 함
 
     excelMergeBtn = Button(root, text="엑셀 합치기", command=lambda: combine.excelCombine(resultText))
     excelMergeBtn.pack(padx=2, pady=2, fill='x')
@@ -29,6 +29,6 @@ if __name__ == '__main__':
     resultText.pack(padx=2, pady=2, fill='both')
 
     time = str(datetime.datetime.now())[0:-7]
-    resultText.insert(END, "[{}] {}".format(time,'프로그램이 시작되었습니다.\n'))
+    resultText.insert(END, "[{}] {}".format(time, '프로그램이 시작되었습니다.\n'))
 
     root.mainloop()
