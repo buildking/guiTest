@@ -40,7 +40,7 @@ def excelCompare(_text=None):
                 str(beforeDataFrame.loc[i, '계약소멸일']))).split()[0])
             lastList.append([i,j, aSubB])
 
-    lastExcel = pd.DataFrame(lastList, columns=['beforeExcel','afterExcel', '차이'])
+    lastExcel = pd.DataFrame(lastList, columns=['전','후', '날짜 차이'])
     lastExcel.to_excel('./excel_result/excel_final_rows.xlsx', index=False)
     logger.info(lastExcel)
     print(lastExcel)
