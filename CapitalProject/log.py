@@ -14,6 +14,7 @@ def setLogging(_logName="log"):
         if not os.path.isdir(log_dir):
             raise
 
+    #어플리케이션 코드가 직접 사용할 수 있는 인터페이스를 제공함
     logger = logging.getLogger(_logName)
 
     if log_level == 'INFO':
@@ -27,8 +28,10 @@ def setLogging(_logName="log"):
     else:
         logger.setLevel(logging.INFO)
 
+    #logger에 의해 만들어진 log 기록들을 적합한 위치로 보냄
     handler = logging.StreamHandler()
 
+    #log 기록들의 최종 출력본의 레이아웃을 결정함
     formatter = logging.Formatter('[%(asctime)s %(name)s:%(lineno)d] %(levelname)-8s %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)

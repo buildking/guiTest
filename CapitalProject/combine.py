@@ -1,6 +1,12 @@
 from os import *
+from tkinter import *
 import tkinter.messagebox as msbox
 import pandas as pd
+import log
+import datetime
+
+#log declare
+logger = log.setLogging("combine")
 
 
 #엑셀 합치기
@@ -9,13 +15,20 @@ def excelCombine(_text=None):
     #합칠 파일이 부족할 때 경고문
     def combineError(state):
         msbox.showwarning("파일 개수 부족", f"{state}폴더에 합칠 엑셀파일이 부족합니다.")
+        logger.debug(f"{state}folder has not enough file")
+        print(f"{state}folder has not enough file")
 
+    time = str(datetime.datetime.now())[0:-7]
+    _text.insert(END, f"\n[{time}] 엑셀파일 취합을 시작합니다.\n")
 
     ## before read ##
     #폴더 안의 파일 리스트 생성
     beforeFileList = listdir('excel_before')
-
+    logger.info(beforeFileList)
     print(beforeFileList)
+    time = str(datetime.datetime.now())[0:-7]
+    _text.insert(END, f"[{time}] 계약 갱신 전 파일 리스트\n{beforeFileList}\n")
+
 
     #폴더 안의 파일 저장할 리스트 생성
     beforeExcelList = []
@@ -35,10 +48,16 @@ def excelCombine(_text=None):
 
             #엑셀파일 인식이 안된다면, 에러메세지 띄우기
             msbox.showwarning("파일 인식 불가", "excel_before폴더를 확인해주세요.")
+            logger.debug("before excel file don't observed")
+            print("before excel file don't observed")
 
     ## after read ##
     #폴더 안의 파일 리스트 생성
     afterFileList = listdir('excel_after')
+    logger.info(afterFileList)
+    print(afterFileList)
+    time = str(datetime.datetime.now())[0:-7]
+    _text.insert(END, f"[{time}] 계약 갱신 후 파일 리스트\n{afterFileList}\n")
 
     #폴더 안의 파일 저장할 리스트 생성
     afterExcelList = []
@@ -57,8 +76,8 @@ def excelCombine(_text=None):
 
             #엑셀파일 인식이 안된다면, 에러메세지 띄우기
             msbox.showwarning("파일 인식 불가", "excel_after폴더를 확인해주세요.")
-
-
+            logger.debug("after excel file don't observed")
+            print("after excel file don't observed")
 
     #before merge
 
@@ -67,7 +86,6 @@ def excelCombine(_text=None):
         combineError('before')
         return
 
-    combineBeforeExcel = pd.DataFrame()
 
     #첫번째 엑셀파일을 데이터프레임에 삽입
     combineBeforeExcel = beforeExcelList[0]
@@ -96,7 +114,8 @@ def excelCombine(_text=None):
     combineBeforeExcel.insert(0, '연번', beForeIndexList)
     #before파일 엑셀로 만들기
     combineBeforeExcel.to_excel('./excel_result/excel_before.xlsx', index=False)
-
+    time = str(datetime.datetime.now())[0:-7]
+    _text.insert(END, f"[{time}] 계약 갱신 전 엑셀파일 취합에 성공했습니다. \n")
 
 
     #after merge
@@ -106,7 +125,6 @@ def excelCombine(_text=None):
         combineError('after')
         return
 
-    combineAfterExcel = pd.DataFrame()
 
     #첫번째 엑셀파일을 데이터프레임에 삽입
     combineAfterExcel = afterExcelList[0]
@@ -136,3 +154,9 @@ def excelCombine(_text=None):
     combineAfterExcel.insert(0, '연번', afterIndexList)
     #after파일 엑셀로 만들기
     combineAfterExcel.to_excel('./excel_result/excel_after.xlsx', index=False)
+    time = str(datetime.datetime.now())[0:-7]
+    _text.insert(END, f"[{time}] 계약 갱신 후 엑셀파일 취합에 성공했습니다. \n")
+    time = str(datetime.datetime.now())[0:-7]
+    _text.insert(END, f"[{time}] 엑셀파일 취합을 종료합니다.\n")
+    logger.info("combine complete")
+    print("Excel file combine complete")
