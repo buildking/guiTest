@@ -30,6 +30,9 @@ def excelCompare(_text=None):
     #lastList = before[계약소멸일] - after[계약체결일] 의 list
     lastList = []
     lastList.clear()
+    #lastListPrint = 사용자가 보기 편하게 출력용으로 제작
+    lastListPrint = []
+    lastListPrint.clear()
 
     #조건을 통과한 값의 (b'계약소멸일' - a'계약체결일')이 180이내인지 추려냄
     for i, j in coreRowNum:
@@ -39,13 +42,17 @@ def excelCompare(_text=None):
             aSubB = int(str(pd.to_datetime(str(afterDataFrame.loc[j, '계약체결일'])) - pd.to_datetime(
                 str(beforeDataFrame.loc[i, '계약소멸일']))).split()[0])
             lastList.append([i,j, aSubB])
+            lastListPrint.append([i+1, j+1, aSubB])
 
+    #개발자용
     lastExcel = pd.DataFrame(lastList, columns=['전','후', '날짜 차이'])
-    lastExcel.to_excel('./excel_result/excel_final_rows.xlsx', index=False)
     logger.info(lastExcel)
     print(lastExcel)
+    #사용자용
+    lastExcelPrint = pd.DataFrame(lastListPrint, columns=['전','후', '날짜 차이'])
+    lastExcelPrint.to_excel('./excel_result/excel_final_rows.xlsx', index=False)
     time = str(datetime.datetime.now())[0:-7]
-    _text.insert(END, f"[{time}] 확인된 공통계약 리스트\n{lastExcel}\n")
+    _text.insert(END, f"[{time}] 확인된 공통계약 리스트\n{lastExcelPrint}\n")
 
     #최종적으로 걸러진 row값을 이용해 excel_final 생성
     finalExcel = pd.DataFrame(columns=[['소멸계약<이동 전>', '소멸계약<이동 전>', '소멸계약<이동 전>', '소멸계약<이동 전>', '소멸계약<이동 전>', '소멸계약<이동 전>', '소멸계약<이동 전>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>', '소속', '차이'],['회사명', '피보험자', '증권번호', '상품명', '상품분류', '계약소멸일', '상태', '회사명', '피보험자', '증권번호', '상품명', '상품분류', '계약체결일', '상태', '모집인명', '생년월일', '소속', '차이']])
