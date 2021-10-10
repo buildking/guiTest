@@ -26,6 +26,9 @@ def excelCompare(_text=None):
                         if str(rowBefore['모집인 주민번호'])[:5] == str(rowAfter['모집인 주민번호'])[:5]:
                             coreRowNum.append([pdb, pda])
 
+    print(coreRowNum)
+    logger.info("계약일 제외하고 일치하는 리스트")
+    logger.info(coreRowNum)
 
     #lastList = before[계약소멸일] - after[계약체결일] 의 list
     lastList = []
@@ -37,8 +40,8 @@ def excelCompare(_text=None):
     #조건을 통과한 값의 (b'계약소멸일' - a'계약체결일')이 180이내인지 추려냄
     for i, j in coreRowNum:
         #날짜 차이가 180일 이내인지 비교
-        if abs(int(str(pd.to_datetime(str(afterDataFrame.loc[j,'계약체결일']))-pd.to_datetime(str(beforeDataFrame.loc[i,'계약소멸일']))).split()[0])) <= 180 :
-            #aSubB = abs(a[계약체결일] - b[계약소멸일])
+        if abs(int(str(pd.to_datetime(str(afterDataFrame.loc[j,'계약체결일']))-pd.to_datetime(str(beforeDataFrame.loc[i,'계약소멸일']))).split()[0])) <= 180:
+            #aSubB = a[계약체결일] - b[계약소멸일]
             aSubB = int(str(pd.to_datetime(str(afterDataFrame.loc[j, '계약체결일'])) - pd.to_datetime(
                 str(beforeDataFrame.loc[i, '계약소멸일']))).split()[0])
             lastList.append([i,j, aSubB])
