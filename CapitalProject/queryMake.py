@@ -92,7 +92,7 @@ def afterExcelToQuery():
     logger.info("after_dataFrame is ready")
 
     # config 에서 테이블명 불러오기
-    afterTableName = ConfigUtil.config.get('oracle', 'concluded_table', fallback='NEW_CONTRACT')
+    afterTableName = ConfigUtil.config.get('oracle', 'new_table', fallback='NEW_CONTRACT')
 
     # 쓰기모드로 open
     file = open("./sql/after.sql", 'w', encoding='utf8')
@@ -153,6 +153,9 @@ def oracleInsert(_textEntry=None):
     _userName = ConfigUtil.config.get('oracle', 'user_name', fallback='admin')
     _userPwd = ConfigUtil.config.get('oracle', 'user_password', fallback='admin')
 
+    _expiredTable = ConfigUtil.config.get('oracle', 'expired_table', fallback='admin')
+    _newTable = ConfigUtil.config.get('oracle', 'new_table', fallback='admin')
+
     #TODO 보안이슈있음 사용자와 비번은 커밋하지말것!
 
     # _ip = "211.238.147.202"
@@ -168,8 +171,8 @@ def oracleInsert(_textEntry=None):
 
     cursor = conn.cursor()
     #기존 데이터 삭제
-    cursor.execute("DELETE FROM END_CONTRACT")
-    cursor.execute("DELETE FROM NEW_CONTRACT")
+    cursor.execute("DELETE FROM " + _expiredTable)
+    cursor.execute("DELETE FROM " + _newTable)
     conn.commit()
 
     time = str(datetime.datetime.now())[0:-7]
@@ -194,7 +197,7 @@ def oracleInsert(_textEntry=None):
     logger.info("oracle db insert is done")
 
     time = str(datetime.datetime.now())[0:-7]
-    _textEntry.insert(END, "[{}] {}".format(time, '데이터 INSERT 성공!\n'))
+    _textEntry.insert(END, f"[{time}] 데이터 INSERT 성공!\n")
     _textEntry.see(END)
 
 #queryMake()
