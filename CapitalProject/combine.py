@@ -158,5 +158,6 @@ def excelCombine(_text=None):
     _text.insert(END, f"[{time}] 계약 갱신 후 엑셀파일 취합에 성공했습니다. \n")
     time = str(datetime.datetime.now())[0:-7]
     _text.insert(END, f"[{time}] 엑셀파일 취합을 종료합니다.\n")
+    _text.see(END)
     logger.info("combine complete")
     print("Excel file combine complete")

@@ -31,11 +31,13 @@ def queryMake(_textEntry=None):
     t_after.join()
     time = str(datetime.datetime.now())[0:-7]
     _textEntry.insert(END, "[{}] {}".format(time, '쿼리만들기가 완료되었습니다.\n'))
+    _textEntry.see(END)
 
     _dbInsertFlag = ConfigUtil.config.get('oracle', 'database_insert', fallback='N')
     if _dbInsertFlag == 'Y':
         time = str(datetime.datetime.now())[0:-7]
         _textEntry.insert(END, "[{}] {}".format(time, '오라클DB에 insert를 시작합니다.\n'))
+        _textEntry.see(END)
         #DBinsert하도록 되어있으면
         t_oracleInsert = threading.Thread(target=oracleInsert, args=(_textEntry,))
         t_oracleInsert.start()
@@ -125,6 +127,7 @@ def oracleInsert(_textEntry=None):
         unzipOracleClient()
         time = str(datetime.datetime.now())[0:-7]
         _textEntry.insert(END, "[{}] {}".format(time, '오라클 접속모듈 압축풀기\n'))
+        _textEntry.see(END)
     else:
         # instantclient_19_12/가 비어있다면
         if len(os.listdir("./instantclient_19_12")) == 0:
@@ -132,6 +135,7 @@ def oracleInsert(_textEntry=None):
             unzipOracleClient()
             time = str(datetime.datetime.now())[0:-7]
             _textEntry.insert(END, "[{}] {}".format(time, '오라클 접속모듈 압축풀기\n'))
+            _textEntry.see(END)
 
     # 오라클 클라이언트 디렉토리 (상대경로 -> 절대경로)
     oracleClientDir = './instantclient_19_12'
@@ -170,6 +174,8 @@ def oracleInsert(_textEntry=None):
 
     time = str(datetime.datetime.now())[0:-7]
     _textEntry.insert(END, "[{}] {}".format(time, '기존 테이블 데이터삭제\n'))
+    _textEntry.see(END)
+
 
     #sql파일을 line 단위로 읽어서 실행한다.
     file1_lines = open("./sql/before.sql", encoding='utf8').readlines()
@@ -189,6 +195,7 @@ def oracleInsert(_textEntry=None):
 
     time = str(datetime.datetime.now())[0:-7]
     _textEntry.insert(END, "[{}] {}".format(time, '데이터 INSERT 성공!\n'))
+    _textEntry.see(END)
 
 #queryMake()
 

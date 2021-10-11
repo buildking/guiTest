@@ -43,5 +43,6 @@ if __name__ == '__main__':
 
     time = str(datetime.datetime.now())[0:-7]
     resultText.insert(END, "[{}] {}".format(time, '프로그램이 시작되었습니다.\n'))
+    resultText.see(END)
 
     root.mainloop()

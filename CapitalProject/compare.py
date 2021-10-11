@@ -70,3 +70,4 @@ def excelCompare(_text=None):
     print("Excel file compare complete")
     time = str(datetime.datetime.now())[0:-7]
     _text.insert(END, f"[{time}] 공통계약 찾기를 종료합니다.\n")
+    _text.see(END)
