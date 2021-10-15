@@ -66,8 +66,6 @@ def excelCompare(_text=None):
             dateResult = ((int(date[0:3])-1900)*365) + (int(date[5:6])*30) + int(date[8:9])
             return int(dateResult)
 
-
-
     #조건을 통과한 값의 (b'계약소멸일' - a'계약체결일')이 180이내인지 추려냄
     for i, j in coreRowNum:
         # beforeDate = len(beforeDataFrame.loc[i, '계약소멸일'])
