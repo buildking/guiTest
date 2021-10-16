@@ -2,6 +2,7 @@ from tkinter import *
 import pandas as pd
 import log
 import datetime
+import time as Time
 
 logger = log.setLogging("compare")
 
@@ -21,16 +22,40 @@ def excelCompare(_text=None):
     coreRowNumPrint = []
     coreRowNumPrint.clear()
 
-    for pdb, rowBefore in beforeDataFrame.iterrows():
-        for pda, rowAfter in afterDataFrame.iterrows():
-            if str(rowBefore['피보험자']) == str(rowAfter['피보험자']):
-                if str(rowBefore['모집인명']) == str(rowAfter['모집인명']):
-                    if str(rowBefore['피보험자\n주민등록번호'])[:5] == str(rowAfter['피보험자\n주민등록번호'])[:5]:
-                        if str(rowBefore['모집인 주민번호'])[:5] == str(rowAfter['모집인 주민번호'])[:5]:
-                            coreRowNum.append([pdb, pda])
-                            coreRowNumPrint.append([pdb+1, pda+1])
+    start = Time.time()
 
+    ##0.62초, 0.60초, 0.59초
+    ## 이 방식으로 하는게 좋을거 같은 속도 차이가 어마어마 하네
+    b_dict = beforeDataFrame.to_dict("records")
+    a_dict = afterDataFrame.to_dict("records")
+    i = 0
+    j = 0
+    for b in b_dict:
+        j = 0
+        for a in a_dict:
+            if str(b['피보험자']) == str(a['피보험자']):
+                if str(b['모집인명']) == str(a['모집인명']):
+                    if str(b['피보험자\n주민등록번호'])[:5] == str(a['피보험자\n주민등록번호'])[:5]:
+                        if str(b['모집인 주민번호'])[:5] == str(a['모집인 주민번호'])[:5]:
+                            coreRowNum.append([i, j])
+                            coreRowNumPrint.append([i+1, j+1])
+            j = j + 1
+        i = i + 1
+
+    ##[82초, 77초, 81초]
+    # for pdb, rowBefore in beforeDataFrame.iterrows():
+    #     for pda, rowAfter in afterDataFrame.iterrows():
+    #         if str(rowBefore['피보험자']) == str(rowAfter['피보험자']):
+    #             if str(rowBefore['모집인명']) == str(rowAfter['모집인명']):
+    #                 if str(rowBefore['피보험자\n주민등록번호'])[:5] == str(rowAfter['피보험자\n주민등록번호'])[:5]:
+    #                     if str(rowBefore['모집인 주민번호'])[:5] == str(rowAfter['모집인 주민번호'])[:5]:
+    #                         coreRowNum.append([pdb, pda])
+    #                         coreRowNumPrint.append([pdb+1, pda+1])
+
+    end = Time.time()
+    print(end - start)
     print(coreRowNumPrint)
+    print(len(coreRowNumPrint))
     logger.info("계약일 제외하고 일치하는 리스트")
     logger.info(coreRowNumPrint)
     coreRowNumPrint = pd.DataFrame(coreRowNumPrint, columns=['전','후'])
@@ -66,16 +91,41 @@ def excelCompare(_text=None):
             dateResult = ((int(date[0:3])-1900)*365) + (int(date[5:6])*30) + int(date[8:9])
             return dateResult
 
+    ## _str(소멸일,체결일) 에는 각각 다음 타입이 들어올수 있음
+    ## type 1. "2021-01-01" (문자타입으로 저장된데이터)
+    ## type 2. "2021-01-01 00:00:00" (날짜타입으로 저장된데이터)
+    ## type 3. "43891" (엑셀에서 날짜타입이 숫자타입으로 바뀌면 이와 같은 데이터)
+    ## type 4. "20200101" (현재까지 발생한적은 없으나 고려할만한 타입임)
+    ## return 이 datetime인 이유.. 계산이 편할것으로 생각되서
+    def dateDivision_2(_str):
+        _findHyphen = _str.find("-")
+        if _findHyphen == -1:
+            ## 하이픈(-) 을 찾지 못했으면 숫자 타입으로 본다.
+            ## 숫자타입은 1990년 01월 01을 기준으로 삼기떄문에 아래와같은 코드를이용하여 변환한다고한다.(링크줄께)
+            return datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + int(_str) - 2)
+        else:
+            ## 하이픈을 찾았으면 type1 또는 type2이다.
+            ## 이 경우 앞에 10자리만 짤라서 date타입으로 만든다.
+            return datetime.datetime.strptime(_str[:10], '%Y-%m-%d')
+
     #조건을 통과한 값의 (b'계약소멸일' - a'계약체결일')이 180이내인지 추려냄
     for i, j in coreRowNum:
         # beforeDate = len(beforeDataFrame.loc[i, '계약소멸일'])
         # afterDate = len(afterDataFrame.loc[j, '계약체결일'])
-        beforeDateNum = dateDivision(beforeDataFrame.loc[i, '계약소멸일'])
-        afterDateNum = dateDivision(afterDataFrame.loc[j, '계약체결일'])
-        if abs(afterDateNum-beforeDateNum) <= 180:
+        ## beforeDateNum = dateDivision(beforeDataFrame.loc[i, '계약소멸일'])
+        ## afterDateNum = dateDivision(afterDataFrame.loc[j, '계약체결일'])
+        beforeDateNum = dateDivision_2(beforeDataFrame.loc[i, '계약소멸일'])
+        afterDateNum = dateDivision_2(afterDataFrame.loc[j, '계약체결일'])
+
+        ## 이후 사용법은 같으며 (dt-dt2).days 로 각 날짜의 간격을 일수로 얻을수 있다.(윤년이 고려되었는지는 모르겠음)
+        if abs((afterDateNum-beforeDateNum).days) <= 180:
             aSubB = afterDateNum-beforeDateNum
             lastList.append([i, j, aSubB])
             lastListPrint.append([i+1, j+1, aSubB])
+        # if abs(afterDateNum-beforeDateNum) <= 180:
+        #     aSubB = afterDateNum-beforeDateNum
+        #     lastList.append([i, j, aSubB])
+        #     lastListPrint.append([i+1, j+1, aSubB])
 
     #개발자용
     lastExcel = pd.DataFrame(lastList, columns=['전','후', '날짜 차이'])
