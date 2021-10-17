@@ -14,7 +14,7 @@ def excelCompare(_text=None):
 
     beforeDataFrame = pd.read_excel('./excel_result/excel_before.xlsx', dtype=str)
     afterDataFrame = pd.read_excel('./excel_result/excel_after.xlsx', dtype=str)
-    print('um')
+    print('파일읽기 완료.')
 
     #비교 통과한 before data와 after data의 row 저장(append로)
     coreRowNum = []
@@ -42,18 +42,8 @@ def excelCompare(_text=None):
             j = j + 1
         i = i + 1
 
-    ##[82초, 77초, 81초]
-    # for pdb, rowBefore in beforeDataFrame.iterrows():
-    #     for pda, rowAfter in afterDataFrame.iterrows():
-    #         if str(rowBefore['피보험자']) == str(rowAfter['피보험자']):
-    #             if str(rowBefore['모집인명']) == str(rowAfter['모집인명']):
-    #                 if str(rowBefore['피보험자\n주민등록번호'])[:5] == str(rowAfter['피보험자\n주민등록번호'])[:5]:
-    #                     if str(rowBefore['모집인 주민번호'])[:5] == str(rowAfter['모집인 주민번호'])[:5]:
-    #                         coreRowNum.append([pdb, pda])
-    #                         coreRowNumPrint.append([pdb+1, pda+1])
-
     end = Time.time()
-    print(end - start)
+    print('tryout_list_time', end - start)
     print(coreRowNumPrint)
     print(len(coreRowNumPrint))
     logger.info("계약일 제외하고 일치하는 리스트")
@@ -80,23 +70,12 @@ def excelCompare(_text=None):
     lastListPrint = []
     lastListPrint.clear()
 
-    #날짜 분류 함수화
-    def dateDivision(date):
-        #변수의 길이 측정
-        dateLen = len(date)
-        #str 형식으로, 하이픈 없이 입력됐다면 6글자 미만일것이라고 가정한다. 혹시 몰라서 7글자를 기준으로 잡음.
-        if dateLen < 7 :
-            return int(date)
-        else:
-            dateResult = ((int(date[0:3])-1900)*365) + (int(date[5:6])*30) + int(date[8:9])
-            return dateResult
-
     ## _str(소멸일,체결일) 에는 각각 다음 타입이 들어올수 있음
     ## type 1. "2021-01-01" (문자타입으로 저장된데이터)
     ## type 2. "2021-01-01 00:00:00" (날짜타입으로 저장된데이터)
     ## type 3. "43891" (엑셀에서 날짜타입이 숫자타입으로 바뀌면 이와 같은 데이터)
     ## type 4. "20200101" (현재까지 발생한적은 없으나 고려할만한 타입임)
-    ## return 이 datetime인 이유.. 계산이 편할것으로 생각되서
+    ## return 이 datetime인 이유.. 계산이 편할것으로 생각돼서
     def dateDivision_2(_str):
         _findHyphen = _str.find("-")
         if _findHyphen == -1:
@@ -148,7 +127,7 @@ def excelCompare(_text=None):
         columnList.append(afcol)
     columnList.append('날짜 차이')
 
-    print(columnList, len(columnList))
+    print('최종 컬럼 리스트\n', columnList, '\n최종 컬럼 개수', len(columnList))
 
     finalExcel = pd.concat([beforeFinal, afterFinal, lastExcel.iloc[:, 2]], axis=1, ignore_index=True)
     finalExcel.columns = columnList
