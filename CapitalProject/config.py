@@ -27,15 +27,15 @@ class ConfigUtil:
         return dict((k.lower(), v) for k, v in items.items())
 
 
-ConfigUtil.load("config.ini")
+ConfigUtil.load("config_2.ini")
 
-if __name__ == '__main__':
-    print("config is main")
-    ConfigUtil.load("config.ini")
-
-    """
-    print( ConfigUtil.config.get( "My" , "foodir1" , fallback="QQQ") )
-    print( ConfigUtil.config.items( "My") )
-    """
-
-    ConfigUtil.write('a.cfg')
+# if __name__ == '__main__':
+#     print("config is main")
+#     ConfigUtil.load("config.ini")
+#
+#     """
+#     print( ConfigUtil.config.get( "My" , "foodir1" , fallback="QQQ") )
+#     print( ConfigUtil.config.items( "My") )
+#     """
+#
+#     ConfigUtil.write('a.cfg')

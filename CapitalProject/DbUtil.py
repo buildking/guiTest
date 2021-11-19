@@ -19,7 +19,7 @@ class DbUtil():
         cursor = self.getCursor()
         for _param in _paramList:
             cursor.execute("INSERT INTO END_CONTRACT VALUES (?, ?, ?, ?, ?, ?)", (
-            _param["numberOld"], _param["expDate"], _param["insNm"], _param["insBirth"], _param["plnrNm"],
+            _param["numberOld"], _param["conDate"], _param["insNm"], _param["insBirth"], _param["plnrNm"],
             _param["plnrBirth"]))
         self.conn.commit()
 
