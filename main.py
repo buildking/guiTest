@@ -1,18 +1,8 @@
-# This is a sample Python script.
+import datetime
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-    print('test')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
-print('hello world')
+# # _tt = "2021-01-01".split("-")
+# # print(_tt[0])
+#
+# excel_date = 43891
+# dt = datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + excel_date - 2)
+# print(dt)

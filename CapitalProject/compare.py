@@ -14,7 +14,8 @@ def excelCompare(_text=None):
 
     beforeDataFrame = pd.read_excel('./excel_result/excel_before.xlsx', dtype=str)
     afterDataFrame = pd.read_excel('./excel_result/excel_after.xlsx', dtype=str)
-    print('파일읽기 완료.')
+    logger.info("파일읽기 완료")
+    #print('파일읽기 완료.')
 
     #비교 통과한 before data와 after data의 row 저장(append로)
     coreRowNum = []
@@ -25,7 +26,7 @@ def excelCompare(_text=None):
     start = Time.time()
 
     ##0.62초, 0.60초, 0.59초
-    ## 이 방식으로 하는게 좋을거 같은 속도 차이가 어마어마 하네
+    ## 이 방식으로 하는게 좋을거 같음. 속도 차이가 어마어마 하네
     b_dict = beforeDataFrame.to_dict("records")
     a_dict = afterDataFrame.to_dict("records")
     i = 0
@@ -43,11 +44,12 @@ def excelCompare(_text=None):
         i = i + 1
 
     end = Time.time()
-    print('tryout_list_time', end - start)
-    print(coreRowNumPrint)
-    print(len(coreRowNumPrint))
-    logger.info("계약일 제외하고 일치하는 리스트")
-    logger.info(coreRowNumPrint)
+    logger.info("excute time >>>>> " + str(end - start) + "s")
+
+    logger.debug("계약일 제외하고 일치하는 리스트")
+    logger.debug(coreRowNumPrint)
+    logger.debug(len(coreRowNumPrint))
+
     coreRowNumPrint = pd.DataFrame(coreRowNumPrint, columns=['전','후'])
     coreRowNumPrint.to_excel('./excel_result/excel_final_tryout_rows.xlsx')
 
@@ -77,8 +79,7 @@ def excelCompare(_text=None):
     ## type 4. "20200101" (현재까지 발생한적은 없으나 고려할만한 타입임)
     ## return 이 datetime인 이유.. 계산이 편할것으로 생각돼서
     def dateDivision_2(_str):
-        _findHyphen = _str.find("-")
-        if _findHyphen == -1:
+        if _str.find("-") == -1:
             ## 하이픈(-) 을 찾지 못했으면 숫자 타입으로 본다.
             ## 숫자타입은 1990년 01월 01을 기준으로 삼기떄문에 아래와같은 코드를이용하여 변환한다고한다.(링크줄께)
             return datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + int(_str) - 2)
@@ -108,16 +109,15 @@ def excelCompare(_text=None):
 
     #개발자용
     lastExcel = pd.DataFrame(lastList, columns=['전','후', '날짜 차이'])
-    logger.info(lastExcel)
-    print(lastExcel)
+    logger.debug(lastExcel)#개발자용이기때문에 log에 남길필요 없음
     #사용자용
     lastExcelPrint = pd.DataFrame(lastListPrint, columns=['전','후', '날짜 차이'])
     lastExcelPrint.to_excel('./excel_result/excel_final_rows.xlsx', index=False)
     time = str(datetime.datetime.now())[0:-7]
     _text.insert(END, f"[{time}] 확인된 공통계약 리스트\n{lastExcelPrint}\n")
 
-    beforeFinal = pd.DataFrame
-    afterFinal = pd.DataFrame
+    # beforeFinal = pd.DataFrame
+    # afterFinal = pd.DataFrame
 
     beforeFinal = pd.concat([beforeDataFrame.loc[[b]] for b, a, diff in lastList], ignore_index=True)
     afterFinal = pd.concat([afterDataFrame.loc[[a]] for b, a, diff in lastList], ignore_index=True)
@@ -127,14 +127,15 @@ def excelCompare(_text=None):
         columnList.append(afcol)
     columnList.append('날짜 차이')
 
-    print('최종 컬럼 리스트\n', columnList, '\n최종 컬럼 개수', len(columnList))
+    logger.debug('최종 컬럼 리스트\n', columnList, '\n최종 컬럼 개수', len(columnList))
+    #print('최종 컬럼 리스트\n', columnList, '\n최종 컬럼 개수', len(columnList))
 
     finalExcel = pd.concat([beforeFinal, afterFinal, lastExcel.iloc[:, 2]], axis=1, ignore_index=True)
     finalExcel.columns = columnList
 
     finalExcel.to_excel('./excel_result/excel_final.xlsx')
     logger.info("compare complete")
-    print("Excel file compare complete")
+    #print("Excel file compare complete")
     time = str(datetime.datetime.now())[0:-7]
     _text.insert(END, f"[{time}] 공통계약 찾기를 종료합니다.\n")
     _text.see(END)
