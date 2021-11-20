@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS END_CONTRACT(number_old text, EXP_DATE text, INS_NM text, INS_BIRTH text, PLNR_NM text, PLNR_BIRTH text);
-CREATE TABLE IF NOT EXISTS NEW_CONTRACT(number_new text, CON_DATE text, INS_NM text, INS_BIRTH text, PLNR_NM text, PLNR_BIRTH text);
+CREATE TABLE IF NOT EXISTS END_CONTRACT(number_end text, END_DATE text, INS_NM text, INS_BIRTH text, PLNR_NM text, PLNR_BIRTH text);
+CREATE TABLE IF NOT EXISTS NEW_CONTRACT(number_new text, NEW_DATE text, INS_NM text, INS_BIRTH text, PLNR_NM text, PLNR_BIRTH text);
 
 
 

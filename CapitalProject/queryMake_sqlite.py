@@ -31,8 +31,6 @@ def newContractInsert():
 
     logger.info("before_dataFrame is ready")
 
-    #쓰기모드로 open
-    #file = open("./sql/before.sql", 'w', encoding='utf8')
     _paramList = []
     for index, row in beforeDf.iterrows():#beforeDf의 row를 순회
         # N번쨰 row 가져오기
@@ -46,21 +44,13 @@ def newContractInsert():
         col14 = str(beforeDf.loc[index][12]).strip()#모집인주민번호
 
         _paramList.append({
-            'numberOld': col0,
-            'expDate': col11,
+            'numberNew': col0,
+            'newDate': col11,
             'insNm': col4,
             'insBirth': col5,
             'plnrNm': col13,
             'plnrBirth': col14,
         })
-
-        # insert 쿼리 생성
-        #a = f'''INSERT INTO NEW_CONTRACT( "number_old", EXP_DATE, INS_NM, INS_BIRTH, PLNR_NM, PLNR_BIRTH)VALUES('{col0}', '{col11}','{col4}','{col5}','{col13}','{col14}')'''
-
-        # insert 쿼리 파일에 write
-        # file.write(a.strip() + "\n")
-        # logger.debug("before:: no." + str(index+1) + " row file write")
-
     dbUtil.deleteNewContract()
     dbUtil.insertNewContract(_paramList)
     logger.info("before_excel to sql success")
@@ -80,7 +70,7 @@ def endContractInsert():
 
     logger.info("after_dataFrame is ready")
 
-    _paramList = [];
+    _paramList = []
     for index, row in afterDf.iterrows():#afterDf의 row를 순회
         # N번쨰 row 가져오기
         # 각 컬럼이 16개나 되기때문에 index로 접근하기위해 .loc사용
@@ -93,8 +83,8 @@ def endContractInsert():
         col14 = str(afterDf.loc[index][12]).strip()  # 모집인주민번호
 
         _paramList.append({
-            'numberOld': col0,
-            'conDate': col10,
+            'numberEnd': col0,
+            'endDate': col10,
             'insNm': col4,
             'insBirth': col5,
             'plnrNm': col13,
