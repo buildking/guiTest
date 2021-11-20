@@ -14,12 +14,9 @@ dbUtil = DbUtil('db/knia.db')#손해보험협회 약어(knia)
 def queryMake(_textEntry=None):
     logger.info("query make start")
 
-    t_new = threading.Thread(target=newContractInsert)
-    t_new.start()
+    newContractInsert()
+    endContractInsert()
 
-    t_end = threading.Thread(target=endContractInsert)
-    t_end.start()
-    t_end.join()
     time = str(datetime.datetime.now())[0:-7]
     _textEntry.insert(END, "[{}] {}".format(time, '정상적으로 저장되었습니다.\n'))
     _textEntry.see(END)
