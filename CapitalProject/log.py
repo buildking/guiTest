@@ -5,7 +5,7 @@ from config import ConfigUtil
 def setLogging(_logName="log"):
     log_level = ConfigUtil.config.get("log", 'log_level', fallback='INFO')
     log_dir = ConfigUtil.config.get("log", 'log_dir', fallback='log')
-    log_file = ConfigUtil.config.get("log", 'log_file', fallback='project.log')
+    log_file = ConfigUtil.config.get("log", 'log_file_name', fallback='project.log')
 
     # log 디렉토리가 없으면 생성한다.
     try:
