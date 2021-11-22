@@ -47,3 +47,17 @@ class DbUtil():
 
     def selectCompareResult(self):
         pass
+
+    def createTable(self):
+        KniaData = sqlite3.connect('./db/knia.db', isolation_level=None)
+
+        knDB = KniaData.cursor()
+
+        readSql = open('./sql/table.sql')
+
+        for _ in range(2):
+            knDB.execute(readSql.readline())
+
+        readSql.close()
+
+        KniaData.close()
