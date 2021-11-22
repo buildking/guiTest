@@ -3,21 +3,19 @@ from tkinter import *
 import combine
 import log
 import datetime
-import sqlite3
-import DbUtil
-
-DbUtil.DbUtil.createTable(None)
+import queryMake_sqlite
 
 def process(textEntry=None):
     #1. 엑셀 합치기
     combine.excelCombine(resultText)
     #2. sqlite insert
+    queryMake_sqlite(resultText)
     #3. 엑셀 비교
     
 if __name__ == '__main__':
     #logger 설정
     logger = log.setLogging("main")
-    logger.info("Start!")
+    logger.debug("Start!")
 
     root = Tk()
 
