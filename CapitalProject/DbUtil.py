@@ -46,4 +46,15 @@ class DbUtil():
         self.conn.commit()
 
     def selectCompareResult(self):
-        pass
+        cursor = self.getCursor()
+        cursor.execute("""
+            SELECT * 
+              FROM END_CONTRACT END, NEW_CONTRACT NEW
+             WHERE TRIM(END.PLNR_NM) = TRIM(NEW.PLNR_NM)
+               AND TRIM(END.PLNR_BIRTH) = TRIM(NEW.PLNR_BIRTH)
+               AND TRIM(END.INS_NM) = TRIM(NEW.INS_NM)
+               AND TRIM(END.INS_BIRTH) = TRIM(NEW.INS_BIRTH)
+               AND (julianday(END.EXP_DATE) - julianday(NEW.CON_DATE)) >= -180
+               AND (julianday(END.EXP_DATE) - julianday(NEW.CON_DATE)) <= 180;""")
+        rows = cursor.fetchall()
+        return rows
