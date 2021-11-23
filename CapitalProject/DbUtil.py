@@ -46,12 +46,22 @@ class DbUtil():
         self.conn.commit()
 
     def selectCompareResult(self):
-        pass
+        cursor = self.getCursor()
+        cursor.execute("""
+                   SELECT * 
+                     FROM END_CONTRACT END, NEW_CONTRACT NEW
+                    WHERE TRIM(END.PLNR_NM) = TRIM(NEW.PLNR_NM)
+                      AND TRIM(END.PLNR_BIRTH) = TRIM(NEW.PLNR_BIRTH)
+                      AND TRIM(END.INS_NM) = TRIM(NEW.INS_NM)
+                      AND TRIM(END.INS_BIRTH) = TRIM(NEW.INS_BIRTH)
+                      AND ABS(julianday(END.EXP_DATE) - julianday(NEW.CON_DATE)) > 180""")
+        rows = cursor.fetchall()
+        return rows
 
     def createTable(self):
-        KniaData = sqlite3.connect('./db/knia.db', isolation_level=None)
-
-        knDB = KniaData.cursor()
+        #KniaData = sqlite3.connect('./db/knia.db', isolation_level=None)
+        #knDB = KniaData.cursor()
+        knDB = self.getCursor()
 
         readSql = open('./sql/table.sql')
 
@@ -60,17 +70,11 @@ class DbUtil():
 
         readSql.close()
 
-        KniaData.close()
+        #반드시 execute하고선
+        self.conn.commit()
 
-        cursor = self.getCursor()
-        cursor.execute("""
-            SELECT * 
-              FROM END_CONTRACT END, NEW_CONTRACT NEW
-             WHERE TRIM(END.PLNR_NM) = TRIM(NEW.PLNR_NM)
-               AND TRIM(END.PLNR_BIRTH) = TRIM(NEW.PLNR_BIRTH)
-               AND TRIM(END.INS_NM) = TRIM(NEW.INS_NM)
-               AND TRIM(END.INS_BIRTH) = TRIM(NEW.INS_BIRTH)
-               AND (julianday(END.EXP_DATE) - julianday(NEW.CON_DATE)) >= -180
-               AND (julianday(END.EXP_DATE) - julianday(NEW.CON_DATE)) <= 180;""")
-        rows = cursor.fetchall()
-        return rows
+        #KniaData.close()
+
+    @staticmethod
+    def databaseClose(self):
+        self.conn.close()

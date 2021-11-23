@@ -4,6 +4,8 @@ import combine
 import log
 import datetime
 import queryMake_sqlite
+import DbUtil
+
 
 def process(textEntry=None):
     #1. 엑셀 합치기
@@ -11,7 +13,7 @@ def process(textEntry=None):
     #2. sqlite insert
     queryMake_sqlite(resultText)
     #3. 엑셀 비교
-    
+
 if __name__ == '__main__':
     #logger 설정
     logger = log.setLogging("main")
@@ -44,4 +46,9 @@ if __name__ == '__main__':
     resultText.insert(END, f"[{time}] 프로그램이 시작되었습니다.\n")
     resultText.see(END)
 
+
+    def close_window():
+        logger.info("program exit")
+        root.destroy()
+    root.protocol("WM_DELETE_WINDOW", close_window)
     root.mainloop()

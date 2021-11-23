@@ -20,6 +20,7 @@ def queryMake(_textEntry=None):
     time = str(datetime.datetime.now())[0:-7]
     _textEntry.insert(END, "[{}] {}".format(time, '정상적으로 저장되었습니다.\n'))
     _textEntry.see(END)
+    dbUtil.databaseClose()
 
 def newContractInsert():
 
