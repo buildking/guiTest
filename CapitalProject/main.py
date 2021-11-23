@@ -3,13 +3,13 @@ from tkinter import *
 import combine
 import log
 import datetime
-from queryMake_sqlite import queryMake
+import queryMake_sqlite
 
 def process(textEntry=None):
     #1. 엑셀 합치기
     combine.excelCombine(resultText)
     #2. sqlite insert
-    queryMake(resultText)
+    queryMake_sqlite(resultText)
     #3. 엑셀 비교
     
 if __name__ == '__main__':
