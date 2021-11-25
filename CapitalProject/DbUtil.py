@@ -54,7 +54,7 @@ class DbUtil():
                       AND TRIM(END.PLNR_BIRTH) = TRIM(NEW.PLNR_BIRTH)
                       AND TRIM(END.INS_NM) = TRIM(NEW.INS_NM)
                       AND TRIM(END.INS_BIRTH) = TRIM(NEW.INS_BIRTH)
-                      AND ABS(julianday(END.EXP_DATE) - julianday(NEW.CON_DATE)) > 180""")
+                      AND ABS(julianday(END.END_DATE) - julianday(NEW.NEW_DATE)) < 180""")
         rows = cursor.fetchall()
         return rows
 
@@ -75,6 +75,5 @@ class DbUtil():
 
         #KniaData.close()
 
-    @staticmethod
     def databaseClose(self):
         self.conn.close()

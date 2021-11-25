@@ -3,6 +3,7 @@ import pandas as pd
 import log
 import datetime
 import time as Time
+import DbUtil
 
 logger = log.setLogging("compare")
 
