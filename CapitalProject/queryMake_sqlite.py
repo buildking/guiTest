@@ -22,7 +22,7 @@ def queryMake(_textEntry=None):
     _textEntry.see(END)
     dbUtil.databaseClose()
 
-def newContractInsert():
+def endContractInsert():
 
     #DataFrame을 가져온다.
     beforeDf = pd.read_excel('./excel_result/excel_before.xlsx')
@@ -61,7 +61,7 @@ def newContractInsert():
     #time = str(datetime.datetime.now())[0:-7]
     #_textEntry.insert(END, "[{}] {}".format(time, 'before 쿼리만들기가 완료되었습니다.\n'))
 
-def endContractInsert():
+def newContractInsert():
 
     #afterDataFrame을 가져온다.
     afterDf = pd.read_excel('./excel_result/excel_after.xlsx')
