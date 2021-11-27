@@ -35,11 +35,11 @@ def endContractInsert():
         # 각 컬럼이 16개나 되기때문에 index로 접근하기위해 .loc사용
         col0 = str(beforeDf.loc[index][0])#연번
         col4 = str(beforeDf.loc[index][4]).strip()#피보험자
-        col5 = str(beforeDf.loc[index][5]).strip()#피보험 주민번호
+        col5 = str(beforeDf.loc[index][5]).strip()[:6]#피보험 주민번호
         #col10 = str(beforeDf.loc[index][10]).strip().split(" ")[0]#계약체결일
         col11 = str(beforeDf.loc[index][9]).strip().split(" ")[0]#계약소멸일
         col13 = str(beforeDf.loc[index][11]).strip()#모집인명
-        col14 = str(beforeDf.loc[index][12]).strip()#모집인주민번호
+        col14 = str(beforeDf.loc[index][12]).strip()[:6]#모집인주민번호
 
         _paramList.append({
             'numberNew': col0,
@@ -49,8 +49,8 @@ def endContractInsert():
             'plnrNm': col13,
             'plnrBirth': col14,
         })
-    dbUtil.deleteNewContract()
-    dbUtil.insertNewContract(_paramList)
+    dbUtil.deleteEndContract()
+    dbUtil.insertEndContract(_paramList)
     logger.info("before_excel to sql success")
     #file.close()
 
@@ -74,11 +74,11 @@ def newContractInsert():
         # 각 컬럼이 16개나 되기때문에 index로 접근하기위해 .loc사용
         col0 = str(afterDf.loc[index][0])  # 연번
         col4 = str(afterDf.loc[index][4]).strip()  # 피보험자
-        col5 = str(afterDf.loc[index][5]).strip()  # 피보험 주민번호
+        col5 = str(afterDf.loc[index][5]).strip()[:6]  # 피보험 주민번호
         col10 = str(afterDf.loc[index][9]).strip().split(" ")[0]  # 계약체결일
         #col11 = str(afterDf.loc[index][11]).strip().split(" ")[0]  # 계약소멸일
         col13 = str(afterDf.loc[index][11]).strip()  # 모집인명
-        col14 = str(afterDf.loc[index][12]).strip()  # 모집인주민번호
+        col14 = str(afterDf.loc[index][12]).strip()[:6]  # 모집인주민번호
 
         _paramList.append({
             'numberEnd': col0,
@@ -89,6 +89,6 @@ def newContractInsert():
             'plnrBirth': col14,
         })
 
-    dbUtil.deleteEndContract()
-    dbUtil.insertEndContract(_paramList)
+    dbUtil.deleteNewContract()
+    dbUtil.insertNewContract(_paramList)
     logger.info("after_excel to sql success")
