@@ -48,7 +48,8 @@ class DbUtil():
     def selectCompareResult(self):
         cursor = self.getCursor()
         cursor.execute("""
-                   SELECT * 
+                   SELECT END.NUMBER_END, END.END_DATE, END.INS_NM, END.INS_BIRTH, END.PLNR_NM, END.PLNR_BIRTH 
+                        , NEW.NUMBER_NEW, NEW.NEW_DATE, NEW.INS_NM, NEW.INS_BIRTH, NEW.PLNR_NM, NEW.PLNR_BIRTH
                      FROM END_CONTRACT END, NEW_CONTRACT NEW
                     WHERE TRIM(END.PLNR_NM) = TRIM(NEW.PLNR_NM)
                       AND TRIM(END.PLNR_BIRTH) = TRIM(NEW.PLNR_BIRTH)
@@ -59,21 +60,15 @@ class DbUtil():
         return rows
 
     def createTable(self):
-        #KniaData = sqlite3.connect('./db/knia.db', isolation_level=None)
-        #knDB = KniaData.cursor()
-        knDB = self.getCursor()
+        cursor = self.getCursor()
 
-        readSql = open('./sql/table.sql')
+        sqlFile = open('./sql/table.sql')
 
         for _ in range(2):
-            knDB.execute(readSql.readline())
+            cursor.execute(sqlFile.readline())
+        sqlFile.close()
 
-        readSql.close()
-
-        #반드시 execute하고선
         self.conn.commit()
-
-        #KniaData.close()
 
     def databaseClose(self):
         self.conn.close()

@@ -10,7 +10,7 @@ import DbUtil
 
 def process(textEntry=None):
     #1. 엑셀 합치기
-    combine.excelCombine(resultText)
+    #combine.excelCombine(resultText)
     #2. sqlite insert
     queryMake(resultText)
     #3. 엑셀 비교
