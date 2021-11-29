@@ -7,18 +7,18 @@ import DbUtil
 
 logger = log.setLogging("compare")
 
-#before, after excel file compare
+#end, new excel file compare
 def excelCompare(_text=None):
 
     time = str(datetime.datetime.now())[0:-7]
     _text.insert(END, f"\n[{time}] 계약 갱신 전,후 공통계약 찾기를 시작합니다.\n")
 
-    beforeDataFrame = pd.read_excel('./excel_result/excel_before.xlsx', dtype=str)
-    afterDataFrame = pd.read_excel('./excel_result/excel_after.xlsx', dtype=str)
+    endDataFrame = pd.read_excel('./excel_result/excel_end.xlsx', dtype=str)
+    newDataFrame = pd.read_excel('./excel_result/excel_new.xlsx', dtype=str)
     logger.info("파일읽기 완료")
     #print('파일읽기 완료.')
 
-    #비교 통과한 before data와 after data의 row 저장(append로)
+    #비교 통과한 end data와 new data의 row 저장(append로)
     coreRowNum = []
     coreRowNum.clear()
     coreRowNumPrint = []
@@ -28,8 +28,8 @@ def excelCompare(_text=None):
 
     ##0.62초, 0.60초, 0.59초
     ## 이 방식으로 하는게 좋을거 같음. 속도 차이가 어마어마 하네
-    b_dict = beforeDataFrame.to_dict("records")
-    a_dict = afterDataFrame.to_dict("records")
+    b_dict = endDataFrame.to_dict("records")
+    a_dict = newDataFrame.to_dict("records")
     i = 0
     j = 0
     for b in b_dict:
@@ -60,13 +60,13 @@ def excelCompare(_text=None):
     x = 0
     for b, a in coreRowNum:
         x += 1
-        finalExcel_tryout.loc[x] = (beforeDataFrame.loc[b, '회사명'], beforeDataFrame.loc[b, '피보험자'], beforeDataFrame.loc[b, '증권번호'], beforeDataFrame.loc[b, '상품명'], beforeDataFrame.loc[b, '상품분류'], beforeDataFrame.loc[b, '계약소멸일'], beforeDataFrame.loc[b, '계약상태'], afterDataFrame.loc[a, '회사명'], afterDataFrame.loc[a, '피보험자'], afterDataFrame.loc[a, '증권번호'], afterDataFrame.loc[a, '상품명'], afterDataFrame.loc[a, '상품분류'], afterDataFrame.loc[a, '계약체결일'], afterDataFrame.loc[a, '계약상태'], afterDataFrame.loc[a, '모집인명'], afterDataFrame.loc[a, '피보험자\n주민등록번호'])
+        finalExcel_tryout.loc[x] = (endDataFrame.loc[b, '회사명'], endDataFrame.loc[b, '피보험자'], endDataFrame.loc[b, '증권번호'], endDataFrame.loc[b, '상품명'], endDataFrame.loc[b, '상품분류'], endDataFrame.loc[b, '계약소멸일'], endDataFrame.loc[b, '계약상태'], newDataFrame.loc[a, '회사명'], newDataFrame.loc[a, '피보험자'], newDataFrame.loc[a, '증권번호'], newDataFrame.loc[a, '상품명'], newDataFrame.loc[a, '상품분류'], newDataFrame.loc[a, '계약체결일'], newDataFrame.loc[a, '계약상태'], newDataFrame.loc[a, '모집인명'], newDataFrame.loc[a, '피보험자\n주민등록번호'])
 
     #1차로 걸러진 데이터 엑셀로 생성
     finalExcel_tryout.to_excel('./excel_result/excel_final_tryout.xlsx')
 
 
-    #lastList = before[계약소멸일] - after[계약체결일] 의 list
+    #lastList = end[계약소멸일] - new[계약체결일] 의 list
     lastList = []
     lastList.clear()
     #lastListPrint = 사용자가 보기 편하게 출력용으로 제작
@@ -91,20 +91,20 @@ def excelCompare(_text=None):
 
     #조건을 통과한 값의 (b'계약소멸일' - a'계약체결일')이 180이내인지 추려냄
     for i, j in coreRowNum:
-        # beforeDate = len(beforeDataFrame.loc[i, '계약소멸일'])
-        # afterDate = len(afterDataFrame.loc[j, '계약체결일'])
-        ## beforeDateNum = dateDivision(beforeDataFrame.loc[i, '계약소멸일'])
-        ## afterDateNum = dateDivision(afterDataFrame.loc[j, '계약체결일'])
-        beforeDateNum = dateDivision_2(beforeDataFrame.loc[i, '계약소멸일'])
-        afterDateNum = dateDivision_2(afterDataFrame.loc[j, '계약체결일'])
+        # endDate = len(endDataFrame.loc[i, '계약소멸일'])
+        # newDate = len(newDataFrame.loc[j, '계약체결일'])
+        ## endDateNum = dateDivision(endDataFrame.loc[i, '계약소멸일'])
+        ## newDateNum = dateDivision(newDataFrame.loc[j, '계약체결일'])
+        endDateNum = dateDivision_2(endDataFrame.loc[i, '계약소멸일'])
+        newDateNum = dateDivision_2(newDataFrame.loc[j, '계약체결일'])
 
         ## 이후 사용법은 같으며 (dt-dt2).days 로 각 날짜의 간격을 일수로 얻을수 있다.(윤년이 고려되었는지는 모르겠음)
-        if abs((afterDateNum-beforeDateNum).days) <= 180:
-            aSubB = afterDateNum-beforeDateNum
+        if abs((newDateNum-endDateNum).days) <= 180:
+            aSubB = newDateNum-endDateNum
             lastList.append([i, j, aSubB])
             lastListPrint.append([i+1, j+1, aSubB])
-        # if abs(afterDateNum-beforeDateNum) <= 180:
-        #     aSubB = afterDateNum-beforeDateNum
+        # if abs(newDateNum-endDateNum) <= 180:
+        #     aSubB = newDateNum-endDateNum
         #     lastList.append([i, j, aSubB])
         #     lastListPrint.append([i+1, j+1, aSubB])
 
@@ -117,21 +117,21 @@ def excelCompare(_text=None):
     time = str(datetime.datetime.now())[0:-7]
     _text.insert(END, f"[{time}] 확인된 공통계약 리스트\n{lastExcelPrint}\n")
 
-    # beforeFinal = pd.DataFrame
-    # afterFinal = pd.DataFrame
+    # endFinal = pd.DataFrame
+    # newFinal = pd.DataFrame
 
-    beforeFinal = pd.concat([beforeDataFrame.loc[[b]] for b, a, diff in lastList], ignore_index=True)
-    afterFinal = pd.concat([afterDataFrame.loc[[a]] for b, a, diff in lastList], ignore_index=True)
+    endFinal = pd.concat([endDataFrame.loc[[b]] for b, a, diff in lastList], ignore_index=True)
+    newFinal = pd.concat([newDataFrame.loc[[a]] for b, a, diff in lastList], ignore_index=True)
 
-    columnList = beforeDataFrame.columns.tolist()
-    for afcol in afterDataFrame.columns.tolist():
+    columnList = endDataFrame.columns.tolist()
+    for afcol in newDataFrame.columns.tolist():
         columnList.append(afcol)
     columnList.append('날짜 차이')
 
     logger.debug('최종 컬럼 리스트\n', columnList, '\n최종 컬럼 개수', len(columnList))
     #print('최종 컬럼 리스트\n', columnList, '\n최종 컬럼 개수', len(columnList))
 
-    finalExcel = pd.concat([beforeFinal, afterFinal, lastExcel.iloc[:, 2]], axis=1, ignore_index=True)
+    finalExcel = pd.concat([endFinal, newFinal, lastExcel.iloc[:, 2]], axis=1, ignore_index=True)
     finalExcel.columns = columnList
 
     finalExcel.to_excel('./excel_result/excel_final.xlsx')

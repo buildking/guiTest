@@ -18,9 +18,10 @@ def dbcompare(_text=None):
     _text.insert(END, f"\n[{time}] 계약 갱신 전,후 공통계약 찾기를 시작합니다.\n")
 
     dbRow = dbUtil.selectCompareResult()
-    resultExcel = pd.DataFrame(dbRow)
+    resultExcel = pd.DataFrame(dbRow, columns=[['소멸계약<이동 전>', '소멸계약<이동 전>', '소멸계약<이동 전>', '소멸계약<이동 전>', '소멸계약<이동 전>', '소멸계약<이동 전>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>', '신규계약<이동 후>'],['연번', '계약소멸일', '피보험자', '피보험자생년월일', '모집인', '모집인생년월일', '연번', '계약체결일', '피보험자', '피보험자생년월일', '모집인', '모집인생년월일']])
+    logger.info(resultExcel)
     print(resultExcel)
-    resultExcel.to_excel('./excel_result/excel_final_result.xlsx')
+    resultExcel.to_excel('./excel_result/excel_result.xlsx')
 
     logger.info("DB 비교 완료")
 

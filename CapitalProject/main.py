@@ -1,6 +1,6 @@
 import tkinter
 from tkinter import *
-import combine
+from combine import *
 import log
 import datetime
 from queryMake_sqlite import *
@@ -10,7 +10,7 @@ import DbUtil
 
 def process(textEntry=None):
     #1. 엑셀 합치기
-    #combine.excelCombine(resultText)
+    excelCombine(resultText)
     #2. sqlite insert
     queryMake(resultText)
     #3. 엑셀 비교
