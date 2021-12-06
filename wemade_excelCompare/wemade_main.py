@@ -11,7 +11,7 @@ def process(textEntry=None):
 
 if __name__ == '__main__':
     #logger 설정
-    logger = log.setLogging("main")
+    logger = wemade_log.setLogging("main")
     logger.debug("Start!")
 
     root = Tk()
