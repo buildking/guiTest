@@ -29,40 +29,13 @@ def xlCompare(_text=None):
         shortError('input')
         return
 
-    # #리스트 안의 파일 하나씩 꺼내기
-    # #첫번째 파일
-    # try:
-    #     endFrame = pd.DataFrame()
-    #     #엑셀 모든 시트를 합쳐서 받는다.
-    #     endFrame_dic = pd.read_excel(f'./input/{excelList[0]}', sheet_name=None, dtype=str)
-    #     endFrame = pd.DataFrame.from_dict([endFrame_dic])
-    #     print(endFrame)
-    #     print(type(endFrame))
-    #     logger.info(endFrame)
-    #     time = str(datetime.datetime.now())[0:-7]
-    #     _text.insert(END, f"[{time}] {endFrame}\n")
-    # except:
-    #     inputError()
-    # #두번째 파일
-    # try:
-    #     newFrame = pd.DataFrame()
-    #     #엑셀 모든 시트를 합쳐서 받는다.
-    #     newFrame_dic = pd.read_excel(f'./input/{excelList[1]}', sheet_name=None, dtype=str)
-    #     newFrame = pd.DataFrame.from_dict([newFrame_dic])
-    #     print(newFrame)
-    #     print(type(newFrame))
-    #     logger.info(newFrame)
-    #     time = str(datetime.datetime.now())[0:-7]
-    #     _text.insert(END, f"[{time}] {newFrame}\n")
-    # except:
-    #     inputError()
-    #
-    # resultFrame = newFrame.copy()
+
+
 
     xl = pd.ExcelFile(f'./input/{excelList[1]}')
     #엑셀 sheet 개수
     xlSheet = len(xl.sheet_names)
-    print(xlSheet)
+    print('시트 개수 = ',xlSheet)
     #엑셀 sheet별 column*row
     xlShape = []
 
@@ -76,22 +49,23 @@ def xlCompare(_text=None):
     for sheetNum in range(xlSheet):
         firExcel = pd.read_excel(f'./input/{excelList[0]}', sheet_name = sheetNum, dtype = str)
         secExcel = pd.read_excel(f'./input/{excelList[1]}', sheet_name = sheetNum, dtype = str)
-        print(secExcel)
 
-        #딕셔너리화
+        #데이터프레임 >> 리스트
         f_list = firExcel.values.tolist()
         s_list = secExcel.values.tolist()
-
-        print('*'*100)
-        print(s_list)
 
         #sheet별 column, row
         xlRow = len(secExcel.index)
         xlColumn = len(secExcel.columns)
 
         xlShape.append([xlRow, xlColumn])
-        print(xlRow, xlColumn)
+        print(sheetNum, '번째 시트 크기 = ',xlRow, 'X', xlColumn)
 
+
+        time = str(datetime.datetime.now())[0:-7]
+        _text.insert(END, f"\n[{time}] {sheetNum}번째 시트 데이터 변경점 탐색을 시작합니다.\n")
+
+        start = Time.time()
 
         i = 0
         j = 0
@@ -103,8 +77,6 @@ def xlCompare(_text=None):
                 if str(f_list[i][j]) != str(s_list[i][j]):
                     coreRowNum.append([sheetNum, i, j])
                     coreRowNumPrint.append([sheetNum, i + 1, j + 1])
-                    print('!!!')
-                    print(sheetNum,i,j)
 
                 ######
                 j = j + 1
@@ -112,39 +84,6 @@ def xlCompare(_text=None):
 
 
 
-    time = str(datetime.datetime.now())[0:-7]
-    _text.insert(END, f"\n[{time}] 데이터 변경점 탐색을 시작합니다.\n")
-
-    start = Time.time()
-
-    #
-    # #데이터가 다른 end data와 new data의 column, row 저장(append로 추가)
-    # coreRowNum = []
-    # coreRowNum.clear()
-    # coreRowNumPrint = []
-    # coreRowNumPrint.clear()
-    #
-    # print(type(newFrame))
-    #
-    # columnList = newFrame.columns.tolist()
-    # #dataframe을 dictionary type으로 변환
-    # b_dict = endFrame.to_dict("list")
-    # a_dict = newFrame.to_dict("list")
-    # rowList = len(a_dict)
-    # i = 0
-    # j = 0
-    # for comCol in columnList:
-    #     j = 0
-    #     bList = b_dict[f'{comCol}']
-    #     aList = a_dict[f'{comCol}']
-    #     for comRow in range(rowList):
-    #         ######비교 로직 작성
-    #         if bList[comRow] is not aList[comRow]:
-    #             coreRowNum.append([i, j])
-    #             coreRowNumPrint.append([i+1, j+1])
-    #         ######
-    #         j = j + 1
-    #     i = i + 1
 
     end = Time.time()
     logger.info("excute time >>>>> " + str(end - start) + "s")
@@ -170,7 +109,7 @@ def xlCompare(_text=None):
 
     #cell 색칠 시작
     time = str(datetime.datetime.now())[0:-7]
-    _text.insert(END, f"[{time}] painting start")
+    _text.insert(END, f"[{time}] painting start \n")
     logger.info("painting start")
     print("Excel file painting start")
 
